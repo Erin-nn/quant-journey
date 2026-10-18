@@ -25,7 +25,9 @@ def constellation(sid):
         con = "Aquarius"
     else:
         con = "Pisces"
-    return(con)
+    return con  # TODO: week3 用异常处理拦截非法日期
+
+
 sid = input("input a Chinese national ID number:")
 
 print("your constellation is:", constellation(sid))
