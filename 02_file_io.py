@@ -1,10 +1,10 @@
 from week01_def_practice import constellation
 
-ids = with open("ids.txt", "rt",encoding="utf-8")
-try:
-    for sid in ids:
-        sid=sid.strip()
-        print(sid, "->", constellation(sid))
+with open("ids.txt", "r", encoding="utf-8") as ids:
+    try:
+        for sid in ids:
+            sid=sid.strip()
+            print(sid, "->", constellation(sid))
 
-except NameError:
-    print("输入错误！")
+    except NameError:
+        print("输入错误！")
