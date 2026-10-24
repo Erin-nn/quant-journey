@@ -32,13 +32,15 @@ python 02_file_io.py            # 批量：ids.txt → result.txt
 
 ## TODO
 
-- [ ] `week01_def_practice.py` 改名为 `01_def_practice.py`，同步 02 里的 import
 - [ ] `constellation()` 加日期合法性校验（13 月、2 月 29 日），随嵩天 4.7 一起做
 - [ ] random 深化留到 numpy 阶段（第 6–8 周）
 
 ## 目录约定
 
-练习文件放仓库根目录，命名 `NN_主题.py`，`NN` 为周次（`01_def_practice.py`、`02_file_io.py`、`03_grade_stats.py` …）。
+练习文件放仓库根目录，命名 `weekNN_主题.py`，`weekNN_` 为周次前缀（`week01_def_practice.py`、`week02_file_io.py`、`week03_grade_stats.py` …）。
+
+用 `week` 前缀而不是纯数字，是因为数字开头的文件名无法被 `import`，以后复用函数会报 SyntaxError。
+
 计划外练习不占编号（如 `random练习.py`）。
 
 ## 关于
