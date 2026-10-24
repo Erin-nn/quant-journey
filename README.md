@@ -27,12 +27,11 @@ python 02_file_io.py            # 批量：ids.txt → result.txt
 ## 学习进度
 
 - [x] **第 1 周**：def 函数、return 返回值、身份证日期切片
-- [ ] **第 2 周**：文件读写（open / with）、异常处理（try-except）—— 待补：`result.txt` 输出
+- [x] **第 2 周**：文件读写（open / with）、异常处理（try-except）
 - [ ] **第 3 周**：成绩统计脚本（读 CSV → 总分与平均分 → 按平均分排名 → 写 CSV），截止 10/28
 
 ## TODO
 
-- [ ] `02_file_io.py` 补写 `result.txt`（10/24）
 - [ ] `week01_def_practice.py` 改名为 `01_def_practice.py`，同步 02 里的 import
 - [ ] `constellation()` 加日期合法性校验（13 月、2 月 29 日），随嵩天 4.7 一起做
 - [ ] random 深化留到 numpy 阶段（第 6–8 周）
