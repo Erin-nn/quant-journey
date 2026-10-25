@@ -1,6 +1,8 @@
 def constellation(sid):
     bm = int(sid[-8:-6])
     bd = int(sid[-6:-4])
+    if not (1 <= bm <= 12) or not (1 <= bd <= 31):
+        raise ValueError("日期非法")
     if (bm == 3 and bd >= 21) or (bm == 4 and bd <= 19):
         con = "Aries"
     elif (bm == 4 and bd >= 20) or (bm == 5 and bd <= 20):
