@@ -32,7 +32,8 @@ python 02_file_io.py            # 批量：ids.txt → result.txt
 
 ## TODO
 
-- [ ] `constellation()` 加日期合法性校验（13 月、2 月 29 日），随嵩天 4.7 一起做
+- [x] `constellation()` 加日期**范围**校验（13 月、1 月 32 日等）—— 已完成
+- [ ] `constellation()` 加日期**真实性**校验（2 月 29 日、4 月 31 日等），需 calendar 模块
 - [ ] random 深化留到 numpy 阶段（第 6–8 周）
 
 ## 目录约定
