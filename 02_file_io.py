@@ -8,9 +8,10 @@ with (
         sid = sid.strip()
         if not sid:
             continue
+        if len(sid) != 18:
+            out.write(f"{sid} 格式非法\n")
+            continue
         try:
-            if len(sid) != 18:
-                raise ValueError
             con = constellation(sid)
             out.write(sid + " -> " + con + "\n")
         except ValueError:
