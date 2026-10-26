@@ -18,10 +18,20 @@ print(names)
 names2 = [r[0] for r in rows]
 print(names2)
 print("任务3如上")
-print(sum(int(x) for x in rows[0][1:]),"任务4如上")
+print(sum(int(x) for x in rows[0][1:]), "\n", "任务4如上")
 zs = rows[0][1:]
-total = sum(int(s) for s in zs)
-print("张三平均分:", round(total / len(zs), 2))
-
-sorted(int(x) for x in ["92", "88", "100"])
-print("任务5如上")
+total1 = sum(int(m) for m in zs)
+avg1 = round(total1 / len(zs), 2)
+print(avg1, "\n", "任务5如上")
+scored = []
+for r in rows:
+    scores = r[1:]
+    total = sum(int(s) for s in scores)
+    avg = round(total / len(scores), 2)
+    scored.append((avg, r[0]))
+scored.sort(reverse=True)
+print(scored)
+print("任务6如上")
+print(sorted(["92", "88", "100"]))
+print(sorted(int(x) for x in ["92", "88", "100"]))
+print("任务7如上")

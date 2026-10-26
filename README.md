@@ -11,7 +11,7 @@ My 12-week python journey toward quantitative finance.
 |---|---|---|
 | `week01_def_practice.py` | 第 1 周 | 星座判断封装成函数（def、return、身份证日期切片） |
 | `week02_file_io.py` | 第 2 周 | 读 `ids.txt` 的身份证号，批量算星座并写入 `result.txt`（含异常处理） |
-| `week03_grade_stats.py` | 第 3 周 | 成绩统计脚本（**进行中**：列表操作练习已完成 5/7） |
+| `week03_grade_stats.py` | 第 3 周 | 成绩统计脚本（**进行中**：列表操作 7/7 已完成，待接 CSV 读写） |
 | `random练习.py` | 计划外 | random 库练习（randint / randrange / choice） |
 | `ids.txt` | — | 第 2 周测试输入：11 条合法 + 2 条非法（长度不足、日期越界） |
 | `result.txt` | — | 第 2 周输出，运行 `week02_file_io.py` 生成（生成物，已 gitignore） |
@@ -33,8 +33,9 @@ python week03_grade_stats.py    # 成绩统计（进行中）
 - [x] **第 2 周**：文件读写（open / with）、异常处理（try-except）
 - [ ] **第 3 周**：成绩统计脚本（读 CSV → 总分与平均分 → 按平均分排名 → 写 CSV），截止 10/28
   - [x] Ch6 6.2 列表：索引与切片、`len`、`append` 与列表推导式、`sum` 与类型转换、平均分 `round`
-  - [ ] Ch6 6.2 排序：元组列表 + `reverse=True`
-  - [ ] Ch6 6.4 字典类型和操作
+  - [x] Ch6 6.2 排序：元组列表 + `reverse=True`（默认按元组首个元素比较）
+  - [x] Ch6 6.3 实例9 基本统计值计算（阅读）
+  - [x] Ch6 6.4 字典类型和操作（阅读；字典练习从简，正式脚本用列表即可）
   - [ ] Ch7 7.4 / 7.5 CSV 读写
   - [ ] 正式脚本：`grades.csv` → 排名 → `grades_result.csv`
 
@@ -45,11 +46,12 @@ python week03_grade_stats.py    # 成绩统计（进行中）
 - [ ] random 深化留到 numpy 阶段（第 6–8 周）
 - [ ] 生成 `grades_result.csv` 后，将其加入 `.gitignore`（生成物不提交）
 
-## 三个易错点备忘
+## 四个易错点备忘
 
 1. **列表的 `+=` 是 `extend` 不是 `append`** —— `names += "张三"` 会把字符串拆成 `['张','三']`，必须用 `append()` 或 `+= ["张三"]`。
 2. **二维列表两层索引** —— 第一个方括号选「人」，第二个选「字段」。`rows[0][1:]` 是第一个人的三科成绩，`rows[1:4]` 是第 2 个人到末尾的所有行。
 3. **字符串排序按字典序** —— `sorted(["92","88","100"])` 得到 `['100','88','92']`。任何比较、求和、排序前必须先 `int()`。
+4. **容器与临时变量要起明显不同的名字** —— `scored` 与 `scores` 只差一个字母，极易看错并导致打印错变量。累积用 `ranking` / `result`，单轮临时用 `scores` / `row`。另外 `list.sort()` 原地修改并返回 `None`，写成 `x = x.sort()` 会把列表冲成 `None`。
 
 ## 目录约定
 
