@@ -2,3 +2,4 @@ __pycache__/
 *.pyc
 result.txt
 .DS_Store
+grades_result.csv
