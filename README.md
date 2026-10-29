@@ -10,7 +10,7 @@ My 12-week python journey toward quantitative finance.
 | 文件 | 周次 | 内容 |
 |---|---|---|
 | `week01_def_practice.py` | 第 1 周 | 星座判断封装成函数（def、return、身份证日期切片、日期真实性校验） |
-| `week02_file_io.py` | 第 2 周 | 读 `ids.txt` 的身份证号，批量算星座并写入 `result.txt`（含异常处理） |
+| `week02_file_io.py` | 第 2 周 | 读 `ids.txt` 的身份证号，批量算星座并写入 `result.txt`（`try / except / else` 三段式异常处理） |
 | `week03_grade_stats.py` | 第 3 周 | 成绩统计脚本：读 `grades.csv` → 算总分/平均分 → 按平均分排名 → 写 `grades_result.csv` |
 | `week03_list_practice.py` | 第 3 周 | 列表操作七项练习（索引与切片、`len`、`append`/推导式、`sum`、平均分、排序、字符串排序陷阱） |
 | `random练习.py` | 计划外 | random 库练习（randint / randrange / choice） |
@@ -32,7 +32,7 @@ python week03_grade_stats.py    # 成绩统计：grades.csv → grades_result.cs
 ## 学习进度
 
 - [x] **第 1 周**：def 函数、return 返回值、身份证日期切片、日期合法性校验（`datetime.date`）
-- [x] **第 2 周**：文件读写（open / with）、异常处理（try-except）
+- [x] **第 2 周**：文件读写（`with open`）、异常处理（`try / except / else`）
 - [x] **第 3 周**：成绩统计脚本（读 CSV → 总分与平均分 → 按平均分排名 → 写 CSV）—— 10/28 完成，10/29 补充小数成绩支持并扩至 10 人
   - [x] Ch6 6.2 列表：索引与切片、`len`、`append` 与列表推导式、`sum` 与类型转换、平均分 `round`
   - [x] Ch6 6.2 排序：元组列表 + `reverse=True`；多级排序 `key=lambda x: (x[0], -x[1])`
@@ -40,6 +40,16 @@ python week03_grade_stats.py    # 成绩统计：grades.csv → grades_result.cs
   - [x] Ch6 6.4 字典类型和操作（阅读；字典练习从简，正式脚本用列表即可）
   - [x] Ch7 7.4 / 7.5 CSV 读写（`csv.reader` / `csv.writer`，含表头分离与 `newline=""`）
   - [x] 正式脚本：`grades.csv` → 排名 → `grades_result.csv`
+
+## 异常处理的三条实践原则
+
+教材只讲语法，这三条是踩坑之后总结的：
+
+1. **优先捕获具体类型，不要用 `except Exception` 一把兜**。宽捕获会把「代码里的 bug」伪装成「数据有问题」——实测：`int(x) / 0` 抛 `ZeroDivisionError`，窄捕获让它穿透、立刻暴露 bug；宽捕获返回「输入不是数字」，把 bug 藏起来。
+2. **一个 `try` 只放「逻辑上不可分割的一步」**。判断标准：这几句是否要么全成功、要么全失败；失败后我是否知道下一步做什么；`try` 里有没有不会抛目标异常的语句。
+3. **成功路径放 `else`，不要堆在 `try` 末尾**。`else` 只在 `try` 未抛异常时执行，这样 `try` 里只剩真正可能出错的那一句，定位零成本。
+
+`week02_file_io.py` 就是这三条的应用：长度校验用 `if ... continue` 提前拦掉（不依赖异常），`try` 里只有 `con = constellation(sid)` 一句，成功走 `else`，失败走 `except`。
 
 ## TODO
 
@@ -49,7 +59,7 @@ python week03_grade_stats.py    # 成绩统计：grades.csv → grades_result.cs
 - [x] 生成 `grades_result.csv` 后，将其加入 `.gitignore`（生成物不提交）—— 已完成
 - [ ] `week03_grade_stats.py` 加字段数校验（`len(r) != len(header)` 时跳过该行），防止 CSV 缺列导致整行静默错位
 
-## 六个易错点备忘
+## 七个易错点备忘
 
 1. **列表的 `+=` 是 `extend` 不是 `append`** —— `names += "张三"` 会把字符串拆成 `['张','三']`，必须用 `append()` 或 `+= ["张三"]`。
 2. **二维列表两层索引** —— 第一个方括号选「行」，第二个选「字段」。表头只影响**行索引**，列索引 `0` 永远是第一列。`rows[0][1:]` 是第一个人的三科成绩，`rows[1:4]` 是第 2 行到末尾的所有行。
@@ -57,6 +67,7 @@ python week03_grade_stats.py    # 成绩统计：grades.csv → grades_result.cs
 4. **容器与临时变量要起明显不同的名字** —— `scored` 与 `scores` 只差一个字母，极易看错并导致打印错变量。累积用 `ranking` / `result`，单轮临时用 `scores` / `row`。另外 `list.sort()` 原地修改并返回 `None`，写成 `x = x.sort()` 会把列表冲成 `None`。
 5. **结果行以姓名开头时，排序必须用 `key`** —— `result.sort(reverse=True)` 会按姓名字典序排，不报错但结果错。须写 `key=lambda x: x[-1]`。
 6. **`TypeError` 与 `ValueError` 是并列类型，互不继承** —— `except ValueError` 抓不到 `TypeError`（如参数个数不对、类型不匹配），会导致程序直接崩溃。调用库函数前先确认参数个数：`datetime.date` 需要 3 个参数 `(year, month, day)`。
+7. **CSV 少一列会导致整行静默错位** —— `csv.writer` 不做列数校验，某行字段数比表头少时，该行后续列全部左移，不报错。读 CSV 后应先校验 `len(r) == len(header)`。
 
 ## 目录约定
 

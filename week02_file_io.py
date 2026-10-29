@@ -13,6 +13,7 @@ with (
             continue
         try:
             con = constellation(sid)
-            out.write(sid + " -> " + con + "\n")
         except ValueError:
             out.write(sid + " 格式非法\n")
+        else:
+            out.write(sid + " -> " + con + "\n")
