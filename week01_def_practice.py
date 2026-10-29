@@ -1,7 +1,13 @@
+import datetime
+
+
 def constellation(sid):
+    year = int(sid[6:10])
     bm = int(sid[-8:-6])
     bd = int(sid[-6:-4])
-    if not (1 <= bm <= 12) or not (1 <= bd <= 31):
+    try:
+        datetime.date(year, bm, bd)
+    except ValueError:
         raise ValueError("日期非法")
     if (bm == 3 and bd >= 21) or (bm == 4 and bd <= 19):
         con = "Aries"
@@ -27,7 +33,8 @@ def constellation(sid):
         con = "Aquarius"
     else:
         con = "Pisces"
-    return con  # TODO: week3 用异常处理拦截非法日期
+    return con
+
 
 if __name__ == "__main__":
     sid = input("input a Chinese national ID number:")

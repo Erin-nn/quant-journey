@@ -5,13 +5,12 @@ with open("grades.csv", "r", encoding="utf-8") as f:
 
 header = rows[0]
 data = rows[1:]
-subjects = len(header) - 1
 result = []
 for r in data:
     name = r[0]
-    scores = [int(x) for x in r[1:]]
+    scores = [float(x) for x in r[1:]]
     total = sum(scores)
-    avg = round(total / subjects, 2)
+    avg = round(total / len(scores), 2)
     result.append([name] + scores + [total, avg])
 result.sort(key=lambda x: x[-1], reverse=True)
 
