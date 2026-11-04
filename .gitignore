@@ -1,5 +1,6 @@
 __pycache__/
 *.pyc
+.venv/
 result.txt
 .DS_Store
 grades_result.csv
