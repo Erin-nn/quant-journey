@@ -8,4 +8,24 @@ l2 = np.array([6, 7.5, 8, 0, 1])
 print(l2.dtype)  # 数组里有一个 7.5 是浮点，numpy 统一向上取 dtype，整个数组升为 float64
 l3 = np.arange(6)
 print(l3.reshape(2, 3), l3.reshape(3, 2))
-l3.reshape(4, 2)  # ValueError: cannot reshape array of size 6 into shape (4,2)
+# l3.reshape(4, 2)   ValueError: cannot reshape array of size 6 into shape (4,2)
+# --- 索引与切片 ---
+a = np.arange(10)
+print(a[1:4], a[::-1], a[::2])
+
+b = np.arange(12).reshape(3, 4)
+print(b[1], b[:, 1], b[0:2, 1:3])  # b[:,1] 的形状是1维，取整列会降维
+
+s = a[2:5]
+s[0] = 99
+print(a)
+a = np.arange(10)
+s = a[2:5].copy()
+s[0] = 99
+print(a)
+
+r = np.array([0.02, -0.03, 0.0, 0.05, -0.01])
+print(r[r > 0])
+m = r.copy()
+m[m < 0] = 0
+print(m)

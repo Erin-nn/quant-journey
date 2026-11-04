@@ -13,7 +13,7 @@ My 12-week python journey toward quantitative finance.
 | `week02_file_io.py` | 第 2 周 | 读 `ids.txt` 的身份证号，批量算星座并写入 `result.txt`（`try / except / else` 三段式异常处理） |
 | `week03_grade_stats.py` | 第 3 周 | 成绩统计脚本：读 `grades.csv` → 算总分/平均分 → 按平均分排名 → 写 `grades_result.csv` |
 | `week03_list_practice.py` | 第 3 周 | 列表操作七项练习（索引与切片、`len`、`append`/推导式、`sum`、平均分、排序、字符串排序陷阱） |
-| `week04_numpy_mc.py` | 第 4 周 | NumPy 入门：数组创建（`np.array` / 数据 vs 形状）、四个属性（`shape`/`ndim`/`size`/`dtype`）、dtype 提升、`reshape` 与非法形状的报错验证 |
+| `week04_numpy_mc.py` | 第 4 周 | NumPy 入门：数组创建（`np.array` / 数据 vs 形状）、四个属性（`shape`/`ndim`/`size`/`dtype`）、dtype 提升、`reshape` 与非法形状报错验证、逗号索引（行/列）、切片是视图 vs `.copy()` 断开、布尔索引 |
 | `random练习.py` | 计划外 | random 库练习（randint / randrange / choice） |
 | `ids.txt` | — | 第 2 周测试输入：11 条合法 + 2 条非法（长度不足、日期越界） |
 | `result.txt` | — | 第 2 周输出，运行 `week02_file_io.py` 生成（生成物，已 gitignore） |
@@ -73,7 +73,10 @@ python3 -m venv .venv
   - [x] Ch4 4.1 四个属性：`shape` / `ndim` / `size` / `dtype`
   - [x] Ch4 4.1 dtype 提升：`[6, 7.5, 8, 0, 1]` 中有一个浮点，整体升为 `float64`；`zeros` 默认也是 `float64`
   - [x] Ch4 4.1 `reshape`：返回新数组、不原地改；`(6,) → (4,2)` 抛 `ValueError: cannot reshape`
-  - [ ] Ch4 4.1 索引与切片：基本切片、布尔索引、花式索引
+  - [x] Ch4 4.1 索引与切片：`a[1:4]` / `[::-1]` / `[::2]`；二维逗号索引 `b[1]`（整行）/ `b[:, 1]`（整列）/ `b[0:2, 1:3]`
+  - [x] Ch4 4.1 视图与拷贝：基本切片共享内存（改切片原数组跟着变），`.copy()` 断开；布尔索引返回拷贝
+  - [x] Ch4 4.1 布尔索引：`r[r > 0]` 取值、`m[m < 0] = 0` 掩码赋值
+  - [ ] Ch4 4.1 花式索引（`a[[0, 2]]` 整数数组索引）
   - [ ] Ch4 4.1 转置 `.T`（视图、非拷贝）与轴对换（后者仅认识，量化用不到）
   - [ ] Ch4 4.2 伪随机数生成
   - [ ] Ch4 4.3 通用函数：`np.sqrt` / `np.log1p` / `np.maximum`，以及「ufunc 遇非法输入返回 `nan` 而不抛异常」
@@ -107,12 +110,23 @@ python3 -m venv .venv
 6. **`TypeError` 与 `ValueError` 是并列类型，互不继承** —— `except ValueError` 抓不到 `TypeError`（如参数个数不对、类型不匹配），会导致程序直接崩溃。调用库函数前先确认参数个数：`datetime.date` 需要 3 个参数 `(year, month, day)`。
 7. **CSV 少一列会导致整行静默错位** —— `csv.writer` 不做列数校验，某行字段数比表头少时，该行后续列全部左移，不报错。读 CSV 后应先校验 `len(r) == len(header)`。
 
-## NumPy 的四条易错点（第 4 周）
+## NumPy 的六条易错点（第 4 周）
 
 1. **`np.array()` 的参数是数据，不是形状** —— `np.array((2, 3))` 得到一维 `[2 3]`，不是 2×3 矩阵。要 2×3 得传嵌套列表 `np.array([[1,2,3],[4,5,6]])`；只有 `zeros`/`ones`/`empty`/`random.randn` 才接收形状元组。
 2. **`reshape` 返回新数组，不修改原数组** —— `a.reshape(2,3)` 单独一行等于空转，必须 `print(...)` 或赋值接住。注意方向相反的例子：列表的 `.sort()` 原地改并返回 `None`，numpy 的 `.sort()` 原地改、`np.sort()` 返回副本，两套语义不要混。
 3. **0 维 ≠ 1 维** —— `np.array(10)` 是 0 维标量数组，打印为 `10`（无方括号）；`np.array([10])` 才是长度为 1 的一维数组，打印为 `[10]`。
 4. **不要用内置名当变量名** —— `list = np.array(10)` 之后，内置 `list` 类型被覆盖，后续 `list(...)` 全部失效。同理别用 `sum`、`max`、`dict`、`id`、`type`。
+5. **三类索引的「视图 / 拷贝」语义不同，必须分开记** —— `np.shares_memory` 实测：
+
+   | 写法 | 返回 | 改它会不会动原数组 |
+   |---|---|---|
+   | `a[1:4]` 基本切片 | 视图 | **会** |
+   | `a[a > 5]` 布尔索引 | 拷贝 | 不会 |
+   | `a[[0, 2]]` 花式索引 | 拷贝 | 不会 |
+
+   要断开视图一律 `.copy()`。`.T` 也是视图，属同一类问题。
+
+6. **取整列会降维，`(3,)` 不是 `(3, 1)`** —— `b[:, 1]` 形状是 `(3,)`（1 维，长度 3），`b[:, 1:2]` 才是 `(3, 1)`（2 维，3 行 1 列）。后果实测：`(3,1) + (3,)` 会广播成 `(3, 3)` 矩阵，本来只想加一列却得到一个外积表。要保持二维身份就用切片 `b[:, 1:2]`。
 
 ## 目录约定
 
