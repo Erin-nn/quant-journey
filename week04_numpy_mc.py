@@ -29,3 +29,15 @@ print(r[r > 0])
 m = r.copy()
 m[m < 0] = 0
 print(m)
+# --- 花式索引与转置 ---
+a = np.arange(10)
+print(
+    a[[0, 2]], a[[2, 0, 1]], a[[0, 0, 0]], np.shares_memory(a, a[[0, 2]])
+)  # 花式索引返回的是拷贝
+b = np.arange(12).reshape(3, 4)
+print(b[[0, 2]])
+c = np.arange(6).reshape(2, 3)
+print(c, c.T, c.T.shape)
+c.T[0, 1] = 99
+print(c)
+print(np.arange(3).T.shape)

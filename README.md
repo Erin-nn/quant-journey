@@ -13,7 +13,7 @@ My 12-week python journey toward quantitative finance.
 | `week02_file_io.py` | 第 2 周 | 读 `ids.txt` 的身份证号，批量算星座并写入 `result.txt`（`try / except / else` 三段式异常处理） |
 | `week03_grade_stats.py` | 第 3 周 | 成绩统计脚本：读 `grades.csv` → 算总分/平均分 → 按平均分排名 → 写 `grades_result.csv` |
 | `week03_list_practice.py` | 第 3 周 | 列表操作七项练习（索引与切片、`len`、`append`/推导式、`sum`、平均分、排序、字符串排序陷阱） |
-| `week04_numpy_mc.py` | 第 4 周 | NumPy 入门：数组创建（`np.array` / 数据 vs 形状）、四个属性（`shape`/`ndim`/`size`/`dtype`）、dtype 提升、`reshape` 与非法形状报错验证、逗号索引（行/列）、切片是视图 vs `.copy()` 断开、布尔索引 |
+| `week04_numpy_mc.py` | 第 4 周 | NumPy 入门：数组创建（`np.array` / 数据 vs 形状）、四个属性（`shape`/`ndim`/`size`/`dtype`）、dtype 提升、`reshape`、逗号索引（行/列）、视图 vs 拷贝、布尔索引、花式索引、转置 `.T` |
 | `random练习.py` | 计划外 | random 库练习（randint / randrange / choice） |
 | `ids.txt` | — | 第 2 周测试输入：11 条合法 + 2 条非法（长度不足、日期越界） |
 | `result.txt` | — | 第 2 周输出，运行 `week02_file_io.py` 生成（生成物，已 gitignore） |
@@ -76,8 +76,8 @@ python3 -m venv .venv
   - [x] Ch4 4.1 索引与切片：`a[1:4]` / `[::-1]` / `[::2]`；二维逗号索引 `b[1]`（整行）/ `b[:, 1]`（整列）/ `b[0:2, 1:3]`
   - [x] Ch4 4.1 视图与拷贝：基本切片共享内存（改切片原数组跟着变），`.copy()` 断开；布尔索引返回拷贝
   - [x] Ch4 4.1 布尔索引：`r[r > 0]` 取值、`m[m < 0] = 0` 掩码赋值
-  - [ ] Ch4 4.1 花式索引（`a[[0, 2]]` 整数数组索引）
-  - [ ] Ch4 4.1 转置 `.T`（视图、非拷贝）与轴对换（后者仅认识，量化用不到）
+  - [x] Ch4 4.1 花式索引：`a[[0, 2]]` 选不连续位置、可乱序、可重复；**返回拷贝**（`shares_memory` = False）
+  - [x] Ch4 4.1 转置 `.T`：2×3 → 3×2，是**视图**（改 `c.T` 原数组跟着变）；一维数组 `.T` 无效，形状不变（轴对换 `swapaxes` 仅认识，量化用不到）
   - [ ] Ch4 4.2 伪随机数生成
   - [ ] Ch4 4.3 通用函数：`np.sqrt` / `np.log1p` / `np.maximum`，以及「ufunc 遇非法输入返回 `nan` 而不抛异常」
   - [ ] Ch4 4.4 `np.where` 条件赋值（非短路：两分支都会求值）
