@@ -13,7 +13,7 @@ My 12-week python journey toward quantitative finance.
 | `week02_file_io.py` | 第 2 周 | 读 `ids.txt` 的身份证号，批量算星座并写入 `result.txt`（`try / except / else` 三段式异常处理） |
 | `week03_grade_stats.py` | 第 3 周 | 成绩统计脚本：读 `grades.csv` → 算总分/平均分 → 按平均分排名 → 写 `grades_result.csv` |
 | `week03_list_practice.py` | 第 3 周 | 列表操作七项练习（索引与切片、`len`、`append`/推导式、`sum`、平均分、排序、字符串排序陷阱） |
-| `week04_numpy_mc.py` | 第 4 周 | NumPy 入门：数组创建（`np.array` / 数据 vs 形状）、四个属性（`shape`/`ndim`/`size`/`dtype`）、dtype 提升、`reshape`、逗号索引（行/列）、视图 vs 拷贝、布尔索引、花式索引、转置 `.T` |
+| `week04_numpy_mc.py` | 第 4 周 | NumPy 入门：数组创建（`np.array` / 数据 vs 形状）、四个属性、dtype 提升、`reshape`、逗号索引、视图 vs 拷贝、布尔索引、花式索引、转置 `.T`、ufunc（`sqrt`/`log1p`/`maximum`）、`np.where` |
 | `random练习.py` | 计划外 | random 库练习（randint / randrange / choice） |
 | `ids.txt` | — | 第 2 周测试输入：11 条合法 + 2 条非法（长度不足、日期越界） |
 | `result.txt` | — | 第 2 周输出，运行 `week02_file_io.py` 生成（生成物，已 gitignore） |
@@ -79,8 +79,8 @@ python3 -m venv .venv
   - [x] Ch4 4.1 花式索引：`a[[0, 2]]` 选不连续位置、可乱序、可重复；**返回拷贝**（`shares_memory` = False）
   - [x] Ch4 4.1 转置 `.T`：2×3 → 3×2，是**视图**（改 `c.T` 原数组跟着变）；一维数组 `.T` 无效，形状不变（轴对换 `swapaxes` 仅认识，量化用不到）
   - [ ] Ch4 4.2 伪随机数生成
-  - [ ] Ch4 4.3 通用函数：`np.sqrt` / `np.log1p` / `np.maximum`，以及「ufunc 遇非法输入返回 `nan` 而不抛异常」
-  - [ ] Ch4 4.4 `np.where` 条件赋值（非短路：两分支都会求值）
+  - [x] Ch4 4.3 通用函数：`np.sqrt`（负数 → `nan` + RuntimeWarning）、`np.maximum`（逐元素截断，区别于聚合的 `np.max`）、`np.abs`；`np.log1p(x)` ≡ `ln(1+x)`，x 在 1e-16 量级时 `log(1+x)` 归零而 `log1p` 正确
+  - [x] Ch4 4.4 `np.where`：条件赋值 `np.where(ret > 0, 1, -1)`；单参数返回**元组** `(array([0, 3]),)`；非短路——两分支先完整求值再挑选，故 `1/ret` 仍触发除零 Warning
 
 ## 异常处理的三条实践原则
 
@@ -110,7 +110,7 @@ python3 -m venv .venv
 6. **`TypeError` 与 `ValueError` 是并列类型，互不继承** —— `except ValueError` 抓不到 `TypeError`（如参数个数不对、类型不匹配），会导致程序直接崩溃。调用库函数前先确认参数个数：`datetime.date` 需要 3 个参数 `(year, month, day)`。
 7. **CSV 少一列会导致整行静默错位** —— `csv.writer` 不做列数校验，某行字段数比表头少时，该行后续列全部左移，不报错。读 CSV 后应先校验 `len(r) == len(header)`。
 
-## NumPy 的六条易错点（第 4 周）
+## NumPy 的九条易错点（第 4 周）
 
 1. **`np.array()` 的参数是数据，不是形状** —— `np.array((2, 3))` 得到一维 `[2 3]`，不是 2×3 矩阵。要 2×3 得传嵌套列表 `np.array([[1,2,3],[4,5,6]])`；只有 `zeros`/`ones`/`empty`/`random.randn` 才接收形状元组。
 2. **`reshape` 返回新数组，不修改原数组** —— `a.reshape(2,3)` 单独一行等于空转，必须 `print(...)` 或赋值接住。注意方向相反的例子：列表的 `.sort()` 原地改并返回 `None`，numpy 的 `.sort()` 原地改、`np.sort()` 返回副本，两套语义不要混。
@@ -127,6 +127,12 @@ python3 -m venv .venv
    要断开视图一律 `.copy()`。`.T` 也是视图，属同一类问题。
 
 6. **取整列会降维，`(3,)` 不是 `(3, 1)`** —— `b[:, 1]` 形状是 `(3,)`（1 维，长度 3），`b[:, 1:2]` 才是 `(3, 1)`（2 维，3 行 1 列）。后果实测：`(3,1) + (3,)` 会广播成 `(3, 3)` 矩阵，本来只想加一列却得到一个外积表。要保持二维身份就用切片 `b[:, 1:2]`。
+
+7. **ufunc 对非法输入返回 `nan`，只发 Warning 不抛异常** —— `np.sqrt(-1)` → `nan` + `RuntimeWarning: invalid value encountered in sqrt`；`np.log(0)` → `-inf`（除以零 Warning）、`np.log(-1)` → `nan`。`try/except` 抓不到任何东西，程序继续跑，结果被 `nan`/`-inf` 污染（求均值、排序、净值曲线全崩）。**唯一有效的防线是不让非法值进数组。**
+
+8. **`np.where` 不是 `if`，两个分支都会先算完** —— `np.where(ret != 0, 1/ret, 0)` 里 `1/ret` 会先对整个数组求值（含 0），所以结果虽对，`RuntimeWarning: divide by zero` 照样出。要真防除零，必须先把分母的 0 换掉。另：单参数 `np.where(cond)` 返回**元组** `(array([...]),)`，不是数组，一维取下标要写 `[0]`。
+
+9. **`log1p(x)` 是 `ln(1+x)`，不是 `ln(x)`** —— 比较两种算法必须写成 `np.log(1 + x)` vs `np.log1p(x)`。实测 x=1e-16 时：`np.log(1 + 1e-16)` = `0.0`（`1+1e-16` 被舍入成 `1.0`），`np.log1p(1e-16)` = `1e-16`，相对误差 100%。x=0.05 这种常规量级两者只差在第 16 位小数，看不出差别。
 
 ## 目录约定
 

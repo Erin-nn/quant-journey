@@ -1,3 +1,4 @@
+print("\n=== 4.1 数组创建 ===")
 import numpy as np
 
 l0 = np.array([10, 20, 30])
@@ -9,7 +10,7 @@ print(l2.dtype)  # 数组里有一个 7.5 是浮点，numpy 统一向上取 dtyp
 l3 = np.arange(6)
 print(l3.reshape(2, 3), l3.reshape(3, 2))
 # l3.reshape(4, 2)   ValueError: cannot reshape array of size 6 into shape (4,2)
-# --- 索引与切片 ---
+print("\n=== 4.1 索引与切片 ===")  # --- 索引与切片 ---
 a = np.arange(10)
 print(a[1:4], a[::-1], a[::2])
 
@@ -29,7 +30,7 @@ print(r[r > 0])
 m = r.copy()
 m[m < 0] = 0
 print(m)
-# --- 花式索引与转置 ---
+print("\n=== 4.1 花式索引与转置 ===")  # --- 花式索引与转置 ---
 a = np.arange(10)
 print(
     a[[0, 2]], a[[2, 0, 1]], a[[0, 0, 0]], np.shares_memory(a, a[[0, 2]])
@@ -41,3 +42,19 @@ print(c, c.T, c.T.shape)
 c.T[0, 1] = 99
 print(c)
 print(np.arange(3).T.shape)
+print("\n=== 4.1 ufunc 与 where ===")  # --- ufunc 与 where ---
+ret = np.array([0.02, -0.03, 0.0, 0.05, -0.01])
+print(np.sqrt([1, 2, 3, -1]))
+# RuntimeWarning: invalid value encountered in sqrt 负数无实数解 → nan，numpy 静默返回而非抛异常
+print(np.maximum(ret, 0))
+print(
+    np.log1p(0.05),
+    np.log(1.05),
+    (np.log(1.05) - np.log1p(0.05)),
+    (np.log(1 + 1e-16) - np.log1p(1e-16)),
+)
+print(np.where(ret > 0, 1, -1))
+print(np.where(ret > 0))
+# 返回元组：(array([0, 3]),)，取下标要写 [0]
+print(np.where(ret != 0, 1 / ret, 0))
+# RuntimeWarning: divide by zero encountered in divide 对两个分支完整求值，没有去除0值
