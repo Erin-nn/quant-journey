@@ -13,7 +13,7 @@ My 12-week python journey toward quantitative finance.
 | `week02_file_io.py` | 第 2 周 | 读 `ids.txt` 的身份证号，批量算星座并写入 `result.txt`（`try / except / else` 三段式异常处理） |
 | `week03_grade_stats.py` | 第 3 周 | 成绩统计脚本：读 `grades.csv` → 算总分/平均分 → 按平均分排名 → 写 `grades_result.csv` |
 | `week03_list_practice.py` | 第 3 周 | 列表操作七项练习（索引与切片、`len`、`append`/推导式、`sum`、平均分、排序、字符串排序陷阱） |
-| `week04_numpy_mc.py` | 第 4 周 | NumPy 入门：数组创建（`np.array` / 数据 vs 形状）、四个属性、dtype 提升、`reshape`、逗号索引、视图 vs 拷贝、布尔索引、花式索引、转置 `.T`、ufunc（`sqrt`/`log1p`/`maximum`）、`np.where` |
+| `week04_numpy_basics.py` | 第 4 周 | NumPy 入门：数组创建（`np.array` / 数据 vs 形状）、四个属性、dtype 提升、`reshape`、逗号索引、视图 vs 拷贝、布尔索引、花式索引、转置 `.T`、ufunc（`sqrt`/`log1p`/`maximum`）、`np.where` |
 | `week04_numpy_random.py` | 第 4 周 | 伪随机数（第 2 版 Ch4.6）：`RandomState` 的可重复性（同种子同结果）、`random_sample`/`randint`/`normal`/`choice`/`permutation`、`mean`/`std` 与年化、蒙特卡洛估 π |
 | `random练习.py` | 计划外 | random 库练习（randint / randrange / choice） |
 | `ids.txt` | — | 第 2 周测试输入：11 条合法 + 2 条非法（长度不足、日期越界） |
@@ -30,13 +30,13 @@ My 12-week python journey toward quantitative finance.
 ```bash
 cd quant-journey
 source .venv/bin/activate
-python week04_numpy_mc.py
+python week04_numpy_basics.py
 ```
 
 方式二：不激活，直接用环境里的解释器
 
 ```bash
-.venv/bin/python week04_numpy_mc.py
+.venv/bin/python week04_numpy_basics.py
 ```
 
 各脚本用途：
@@ -45,7 +45,7 @@ python week04_numpy_mc.py
 python week01_def_practice.py   # 单条身份证号 → 星座
 python week02_file_io.py        # 批量：ids.txt → result.txt
 python week03_grade_stats.py    # 成绩统计：grades.csv → grades_result.csv
-python week04_numpy_mc.py       # NumPy 数组创建与属性（末行故意报错，属预期）
+python week04_numpy_basics.py   # NumPy 数组创建、属性、索引切片、ufunc 与 where
 python week04_numpy_random.py   # 伪随机数：可重复性、分布抽样、蒙特卡洛估 π
 ```
 

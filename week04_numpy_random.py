@@ -9,7 +9,9 @@ print(a, np.array_equal(a, b), np.array_equal(a, c))
 print("\n=== 2 分布 ===")
 rng = np.random.RandomState(0)
 returns = rng.normal(0, 0.01, 1000)
-print(rng.randint(0, 100, size=10), round(np.mean(rng4), 4), round(np.std(rng4), 4))
+print(
+    rng.randint(0, 100, size=10), round(np.mean(returns), 4), round(np.std(returns), 4)
+)
 
 print("\n=== 3 抽样 ===")
 rng = np.random.RandomState(0)
