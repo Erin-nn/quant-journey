@@ -1,9 +1,12 @@
 # quant-journey
 
-My 12-week python journey toward quantitative finance.
+Python 学习仓库，方向是量化。
 
-本仓库记录我从 Python 基础语法，到独立完成第一个因子回测的 12 周过程。
-每个知识点对应一个 .py 文件，全部亲手敲过，不复制粘贴。
+本仓库记录我从 Python 基础语法，到独立完成股价路径模拟的全过程。每个知识点对应一个 .py 文件，全部亲手敲过，不复制粘贴。
+
+> **本学期范围（2026-11-10 定稿）**：编程主线到 **第 6 周（11/16–11/22，GBM 出图）为止**，11/23 起不再排新内容。
+> 原 12 周方案中的 pandas（Ch5–Ch10）与因子回测闭环，整体挪到**寒假和大一下**执行。
+> Ch4 的 4.5 线性代数推到**明年（第 7 周以后）**，本学期不做。
 
 ## 文件说明
 
@@ -80,19 +83,42 @@ python3 -m venv .venv
 
 - [ ] **第 5 周（11/09–11/15）NumPy 收尾 A：统计方法 + 数组文件 IO + 第一张图** —— 文件 `week05_numpy_io.py`
   - [ ] 概念 1 `cumsum` / `cumprod`：累计和 vs 连乘，`axis` 在二维下的方向；累计收益 ↔ 复利净值
-  - [ ] 概念 2 数组文件 IO：`np.save` / `np.load`（`.npy` 二进制，保形状与 dtype），与 `to_csv`/`loadtxt` 文本格式的取舍
+  - [x] 概念 2 数组文件 IO：`np.save` / `np.load`（`.npy` 二进制，保形状与 dtype）、`np.savez` / `np.savez_compressed`（多数组打包成 `.npz`，按键取值）；`np.save` 自动补 `.npy` 后缀而 `np.load` 必须写全名
   - [ ] 概念 3 matplotlib 第一次出图：`plot` / `xlabel` / `title` / `savefig`；标签用英文（默认字体无中文字形）
   - [ ] 交付物 `nav_curve.png`：一组日收益率 → `cumprod(1 + r)` → 净值曲线 → 存图
-  - 验收：净值末值 = `∏(1+r)`（手算对照）；`.npy` 存后读回 `np.array_equal` 为 True；png 生成且带标题坐标轴
+  - 验收：净值末值 = `∏(1+r)`（手算对照）；`.npy` 存后读回 `np.array_equal` 为 True；`.npz` 能按 `arch["b"]` 取回且 `arch.files` 列出全部键；png 生成且带标题坐标轴
 
 - [ ] **第 6 周（11/16–11/22）NumPy 收尾 B：随机漫步 + GBM + 期末分布** —— 文件 `week06_gbm_mc.py`
   - [ ] 概念 1 随机漫步（4.7 教材版）：±1 步长 + `cumsum`；终值标准差 = √N（1000 步 ≈ 31.6）
   - [ ] 概念 2 GBM 股价路径：对数收益 `μ·dt + σ·√dt·z` → `cumsum` → `exp`，`S_t = S0·exp(...)`；路径恒正。**漂移项须减 `0.5σ²`**（实测 `μ=0.1, σ=0.2, T=1, S0=100`：带修正得 110.56，理论 `S0·exp(μT)` = 110.52；不修正得 112.79，偏高约 2%）
   - [ ] 概念 3 期末价格分布：`plt.hist`，右偏形态 = 对数正态；对照理论均值 `S0·exp(μT)`
   - [ ] 交付物 `gbm_paths.png` + `gbm_hist.png`，并打印实测均值/理论均值
-  - 验收：直方图明显右偏；实测期末均值与理论值差 < 3%；任一路径最小值 > 0
+  - 验收（11/10 定稿）：直方图**明显右偏**；实测期末均值与理论 `S0·exp(μT)` 误差 **< 3%**；**任一路径最小值 > 0**；漂移项必须减 `0.5σ²`（不减会偏高约 2%）
 
-- [ ] **第 7 周及以后**：4.5 线性代数（`np.dot` / `inv` / `solve` / `svd`）—— 协方差矩阵、回归都依赖它，本轮两周未排入，须单独安排
+- [ ] **第 7 周及以后（明年，本学期不做）**：4.5 线性代数（`np.dot` / `inv` / `solve` / `svd`）—— 协方差矩阵、回归都依赖它
+
+## 知识掌握度表
+
+三态：✅ 已验证 / 🟡 有代码但未复述 / ⬜ 未验证。**「能闭卷复述」只有在周日 A4 闭卷测过之后才能打勾**，否则一律 ⬜。
+
+| 概念 | 能写 | 能闭卷复述 | 最近复习 | 证据来源 |
+|---|---|---|---|---|
+| ndarray 创建与属性（数据 vs 形状） | ✅ | ⬜ | 11/04 | `week04_numpy_basics.py` |
+| `reshape` 返回新数组 | ✅ | ⬜ | 11/04 | `week04_numpy_basics.py` |
+| 索引切片 / 逗号索引 / 降维 | ✅ | ⬜ | 11/04 | `week04_numpy_basics.py` |
+| 视图 vs 拷贝（切片、布尔、花式） | ✅ | ⬜ | 11/04 | `week04_numpy_basics.py` |
+| ufunc（`sqrt`/`log1p`/`maximum`）与 `nan` 静默 | ✅ | ⬜ | 11/05 | `week04_numpy_basics.py` |
+| `np.where`（条件赋值、非短路、返回元组） | ✅ | ⬜ | 11/05 | `week04_numpy_basics.py` |
+| 伪随机数与可重复性（`RandomState`） | ✅ | ⬜ | 11/06 | `week04_numpy_random.py` |
+| 分布抽样（`normal`/`choice`/`permutation`） | ✅ | ⬜ | 11/06 | `week04_numpy_random.py` |
+| `mean`/`std` 与年化（×252、×√252） | ✅ | ⬜ | 11/06 | `week04_numpy_random.py` |
+| 蒙特卡洛（`4 × inside.mean()`） | ✅ | ⬜ | 11/06 | `week04_numpy_random.py` |
+| `cumsum` / `cumprod` 与净值口径 | ✅ | ⬜ | 11/09 | `week05_numpy_io.py` |
+| `axis` 方向（消掉第 k 维） | ✅ | ⬜ | 11/09 | `week05_numpy_io.py` |
+| 数组文件 IO（`np.save`/`np.load`/`np.savez`） | ✅ | ⬜ | 11/10 | `week05_numpy_io.py` |
+| matplotlib 出图 | ⬜ | ⬜ | — | 本周待补 |
+
+「能写」的判定标准：该文件跑通且验收项全过。「能闭卷复述」的判定标准：周日 A4 上不查资料能写出定义 + 一个最小可跑例子。二者分开记，不互相顶替。
 
 ## 异常处理的三条实践原则
 
