@@ -82,7 +82,7 @@ python3 -m venv .venv
   - [x] 4.6 伪随机数生成：`RandomState(seed)` 可重复（同种子同结果，`np.array_equal` 验证）、`random_sample`/`randint`/`normal`/`choice`/`permutation`；`mean`/`std` 与年化（收益 ×252、波动 ×√252）；蒙特卡洛估 π（`4 × inside.mean()`）
 
 - [ ] **第 5 周（11/09–11/15）NumPy 收尾 A：统计方法 + 数组文件 IO + 第一张图** —— 文件 `week05_numpy_io.py`
-  - [ ] 概念 1 `cumsum` / `cumprod`：累计和 vs 连乘，`axis` 在二维下的方向；累计收益 ↔ 复利净值
+  - [x] 概念 1 `cumsum` / `cumprod`：累计和 vs 连乘，`axis` 在二维下的方向；累计收益 ↔ 复利净值
   - [x] 概念 2 数组文件 IO：`np.save` / `np.load`（`.npy` 二进制，保形状与 dtype）、`np.savez` / `np.savez_compressed`（多数组打包成 `.npz`，按键取值）；`np.save` 自动补 `.npy` 后缀而 `np.load` 必须写全名
   - [ ] 概念 3 matplotlib 第一次出图：`plot` / `xlabel` / `title` / `savefig`；标签用英文（默认字体无中文字形）
   - [ ] 交付物 `nav_curve.png`：一组日收益率 → `cumprod(1 + r)` → 净值曲线 → 存图

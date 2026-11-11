@@ -15,7 +15,23 @@ b = np.array([[0, 1, 2], [3, 4, 5]])
 print(b.cumsum(axis=0), "\n", b.cumsum(axis=1))
 # axis=0 消掉行，每列得一个值（[0+3, 1+4, 2+5]）；axis=1 消掉列，每行得一个值
 
-print("\n=== 3 数组文件 IO ===")
+print("\n=== 3 偏差对比 ===")
+rng = np.random.RandomState(0)
+re1 = rng.normal(0, 0.005, 20)
+re2 = rng.normal(0, 0.05, 20)
+print(
+    round(np.cumsum(re1)[-1], 6),
+    round(np.cumprod(1 + re1)[-1] - 1, 6),
+    round((np.cumsum(re1)[-1] - (np.cumprod(1 + re1)[-1] - 1)), 6),
+)
+print(
+    round(np.cumsum(re2)[-1], 6),
+    round(np.cumprod(1 + re2)[-1] - 1, 6),
+    round((np.cumsum(re2)[-1] - (np.cumprod(1 + re2)[-1] - 1)), 6),
+)
+# σ 放大 10 倍时，偏差放大约26倍
+
+print("\n=== 4 数组文件 IO ===")
 nav = np.cumprod(1 + np.array([0.02, -0.03, 0.05, -0.02, 0.01]))
 np.save("nav", nav)  # 不写后缀
 back = np.load("nav.npy")  # 读的时候必须写全
