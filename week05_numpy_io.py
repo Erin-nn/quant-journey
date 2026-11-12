@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 print("=== 1 cumsum 与 cumprod ===")
 r = np.array([0.02, -0.03, 0.05, -0.02, 0.01])  # 5 天日收益率
@@ -48,3 +49,25 @@ print(arch.files)  # ['a', 'b']
 print(arch["b"])
 np.savez_compressed("arrays_compressed.npz", a=arr, b=arr * 2)
 # .npy 与 .npz 分别解决单数组和多数组打包；存时可以不加后缀，会自己补全，但读时必须加后缀。
+
+print("\n=== 5 首次出图 ===")
+c = np.load("nav.npy")
+print(np.shape(c))
+plt.figure()
+plt.plot(c)
+plt.show()
+#    show 会阻塞，关掉窗口才继续
+
+plt.figure()
+plt.plot(c)
+plt.title("a picture")
+plt.xlabel("x")
+plt.ylabel("y")
+plt.show()
+
+d = c**2
+plt.figure()
+plt.plot(c)
+plt.plot(d)
+plt.show()
+#  plot 会自己分配颜色，不用你指定
