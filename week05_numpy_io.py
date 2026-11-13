@@ -50,24 +50,28 @@ print(arch["b"])
 np.savez_compressed("arrays_compressed.npz", a=arr, b=arr * 2)
 # .npy 与 .npz 分别解决单数组和多数组打包；存时可以不加后缀，会自己补全，但读时必须加后缀。
 
-print("\n=== 5 首次出图 ===")
-c = np.load("nav.npy")
-print(np.shape(c))
-plt.figure()
-plt.plot(c)
-plt.show()
-#    show 会阻塞，关掉窗口才继续
+# print("\n=== 5 首次出图 ===")
+# c = np.load("nav.npy")
+# print(np.shape(c))
+# plt.figure()
+# plt.plot(c)
+# plt.figure()
+# plt.plot(c)
+# plt.title("a picture")
+# plt.xlabel("x")
+# plt.ylabel("y")
 
-plt.figure()
-plt.plot(c)
-plt.title("a picture")
-plt.xlabel("x")
-plt.ylabel("y")
-plt.show()
+# d = c**2
+# plt.figure()
+# plt.plot(c)
+# plt.plot(d)  #  plot 会自己分配颜色，不用你指定
 
-d = c**2
+print("\n=== 6 保存图片 ===")
+d = np.load("nav.npy")
 plt.figure()
-plt.plot(c)
 plt.plot(d)
-plt.show()
-#  plot 会自己分配颜色，不用你指定
+plt.title("NAV Curve")
+plt.xlabel("day")
+plt.ylabel("nav")
+plt.savefig("nav_curve.png", dpi=100)  # dpi 决定输出像素数，100 约够屏幕看。
+plt.close()
