@@ -18,11 +18,14 @@ Python 学习仓库，方向是量化。
 | `week03_list_practice.py` | 第 3 周 | 列表操作七项练习（索引与切片、`len`、`append`/推导式、`sum`、平均分、排序、字符串排序陷阱） |
 | `week04_numpy_basics.py` | 第 4 周 | NumPy 入门：数组创建（`np.array` / 数据 vs 形状）、四个属性、dtype 提升、`reshape`、逗号索引、视图 vs 拷贝、布尔索引、花式索引、转置 `.T`、ufunc（`sqrt`/`log1p`/`maximum`）、`np.where` |
 | `week04_numpy_random.py` | 第 4 周 | 伪随机数（第 2 版 Ch4.6）：`RandomState` 的可重复性（同种子同结果）、`random_sample`/`randint`/`normal`/`choice`/`permutation`、`mean`/`std` 与年化、蒙特卡洛估 π |
+| `week05_numpy_io.py` | 第 5 周 | 统计方法与文件 IO：`cumsum`/`cumprod` 与净值口径、`axis` 方向、线性加总 vs 复利的偏差、`np.save`/`np.load`/`np.savez`、matplotlib 出图与 `savefig` |
 | `random练习.py` | 计划外 | random 库练习（randint / randrange / choice） |
 | `ids.txt` | — | 第 2 周测试输入：11 条合法 + 2 条非法（长度不足、日期越界） |
 | `result.txt` | — | 第 2 周输出，运行 `week02_file_io.py` 生成（生成物，已 gitignore） |
 | `grades.csv` | — | 第 3 周测试输入：10 名学生 × 3 门科目（含 92.5 这类小数成绩） |
 | `grades_result.csv` | — | 第 3 周输出，运行 `week03_grade_stats.py` 生成（生成物，已 gitignore） |
+| `nav.npy` / `*.npz` | — | 第 5 周产物，运行 `week05_numpy_io.py` 生成（已 gitignore） |
+| `nav_curve.png` | — | 第 5 周交付物，净值曲线图（生成物，已 gitignore；约 27 KB） |
 
 ## 如何运行
 
@@ -81,11 +84,11 @@ python3 -m venv .venv
   - [x] 4.3 将条件逻辑表述为数组运算：`np.where(ret > 0, 1, -1)`；单参数返回**元组** `(array([0, 3]),)`；非短路——两分支先完整求值再挑选，故 `1/ret` 仍触发除零 Warning
   - [x] 4.6 伪随机数生成：`RandomState(seed)` 可重复（同种子同结果，`np.array_equal` 验证）、`random_sample`/`randint`/`normal`/`choice`/`permutation`；`mean`/`std` 与年化（收益 ×252、波动 ×√252）；蒙特卡洛估 π（`4 × inside.mean()`）
 
-- [ ] **第 5 周（11/09–11/15）NumPy 收尾 A：统计方法 + 数组文件 IO + 第一张图** —— 文件 `week05_numpy_io.py`
+- [x] **第 5 周（11/09–11/15）NumPy 收尾 A：统计方法 + 数组文件 IO + 第一张图** —— 文件 `week05_numpy_io.py`（11/14 完成）
   - [x] 概念 1 `cumsum` / `cumprod`：累计和 vs 连乘，`axis` 在二维下的方向；累计收益 ↔ 复利净值
   - [x] 概念 2 数组文件 IO：`np.save` / `np.load`（`.npy` 二进制，保形状与 dtype）、`np.savez` / `np.savez_compressed`（多数组打包成 `.npz`，按键取值）；`np.save` 自动补 `.npy` 后缀而 `np.load` 必须写全名
-  - [ ] 概念 3 matplotlib 第一次出图：`plot` / `xlabel` / `title` / `savefig`；标签用英文（默认字体无中文字形）
-  - [ ] 交付物 `nav_curve.png`：一组日收益率 → `cumprod(1 + r)` → 净值曲线 → 存图
+  - [x] 概念 3 matplotlib 第一次出图：`figure` / `plot` / `title` / `xlabel` / `savefig` / `plt.close()`；标签用英文（默认字体无中文字形）；`show` 阻塞、脚本化出图只用 `savefig`
+  - [x] 交付物 `nav_curve.png`：一组日收益率 → `cumprod(1 + r)` → 净值曲线（`figsize=(8,4)`、`linewidth=2`、`marker="o"`、`grid`）→ `savefig(dpi=100)`，实测 27,154 字节
   - 验收：净值末值 = `∏(1+r)`（手算对照）；`.npy` 存后读回 `np.array_equal` 为 True；`.npz` 能按 `arch["b"]` 取回且 `arch.files` 列出全部键；png 生成且带标题坐标轴
 
 - [ ] **第 6 周（11/16–11/22）NumPy 收尾 B：随机漫步 + GBM + 期末分布** —— 文件 `week06_gbm_mc.py`
@@ -99,7 +102,7 @@ python3 -m venv .venv
 
 ## 知识掌握度表
 
-三态：✅ 已验证 / 🟡 有代码但未复述 / ⬜ 未验证。**「能闭卷复述」只有在周日 A4 闭卷测过之后才能打勾**，否则一律 ⬜。
+三态：✅ 已验证（闭卷复述准确）/ 🟡 部分掌握（复述过但不完整，或只有代码未复述）/ ⬜ 未验证。**「能闭卷复述」只有在周日 A4 闭卷测过之后才能打勾**，否则一律 ⬜。
 
 | 概念 | 能写 | 能闭卷复述 | 最近复习 | 证据来源 |
 |---|---|---|---|---|
@@ -113,10 +116,11 @@ python3 -m venv .venv
 | 分布抽样（`normal`/`choice`/`permutation`） | ✅ | ⬜ | 11/06 | `week04_numpy_random.py` |
 | `mean`/`std` 与年化（×252、×√252） | ✅ | ⬜ | 11/06 | `week04_numpy_random.py` |
 | 蒙特卡洛（`4 × inside.mean()`） | ✅ | ⬜ | 11/06 | `week04_numpy_random.py` |
-| `cumsum` / `cumprod` 与净值口径 | ✅ | ⬜ | 11/09 | `week05_numpy_io.py` |
-| `axis` 方向（消掉第 k 维） | ✅ | ⬜ | 11/09 | `week05_numpy_io.py` |
-| 数组文件 IO（`np.save`/`np.load`/`np.savez`） | ✅ | ⬜ | 11/10 | `week05_numpy_io.py` |
-| matplotlib 出图 | ⬜ | ⬜ | — | 本周待补 |
+| `cumsum` / `cumprod` 与净值口径 | ✅ | 🟡 | 11/14 | `week05_numpy_io.py` |
+| `axis` 方向（消掉第 k 维） | ✅ | 🟡 | 11/14 | `week05_numpy_io.py` |
+| 数组文件 IO（`np.save`/`np.load`/`np.savez`） | ✅ | 🟡 | 11/14 | `week05_numpy_io.py` |
+| matplotlib 出图（`figure`/`plot`/`savefig`） | ✅ | ✅ | 11/14 | `week05_numpy_io.py` |
+| 线性加总 vs 复利净值的偏差来源 | ✅ | ⬜ | 11/14 | `week05_numpy_io.py` |
 
 「能写」的判定标准：该文件跑通且验收项全过。「能闭卷复述」的判定标准：周日 A4 上不查资料能写出定义 + 一个最小可跑例子。二者分开记，不互相顶替。
 
@@ -148,7 +152,7 @@ python3 -m venv .venv
 6. **`TypeError` 与 `ValueError` 是并列类型，互不继承** —— `except ValueError` 抓不到 `TypeError`（如参数个数不对、类型不匹配），会导致程序直接崩溃。调用库函数前先确认参数个数：`datetime.date` 需要 3 个参数 `(year, month, day)`。
 7. **CSV 少一列会导致整行静默错位** —— `csv.writer` 不做列数校验，某行字段数比表头少时，该行后续列全部左移，不报错。读 CSV 后应先校验 `len(r) == len(header)`。
 
-## NumPy 的十二条易错点（第 4 周）
+## NumPy 的十三条易错点（第 4–5 周）
 
 1. **`np.array()` 的参数是数据，不是形状** —— `np.array((2, 3))` 得到一维 `[2 3]`，不是 2×3 矩阵。要 2×3 得传嵌套列表 `np.array([[1,2,3],[4,5,6]])`；只有 `zeros`/`ones`/`empty`/`random.randn` 才接收形状元组。
 2. **`reshape` 返回新数组，不修改原数组** —— `a.reshape(2,3)` 单独一行等于空转，必须 `print(...)` 或赋值接住。注意方向相反的例子：列表的 `.sort()` 原地改并返回 `None`，numpy 的 `.sort()` 原地改、`np.sort()` 返回副本，两套语义不要混。
@@ -177,6 +181,8 @@ python3 -m venv .venv
 11. **同一个生成器连续抽样，结果必然不同（状态会推进）** —— 想复现书上/参考的输出，必须**新建**生成器从初始状态出发。实测 `RandomState(0)`：直接 `randint` 得 `[44 47 64 67 67 …]`，先抽过 1000 个 normal 再 `randint` 得 `[96 38 31 22 91 …]`。种子只决定起点，不决定第几次调用。
 
 12. **numpy 和 pandas 的 `std()` 分母不同** —— numpy 默认除以 `n`（总体标准差），pandas 默认除以 `n-1`（样本标准差，`ddof=1`）。实测同一组 5 个数：`np.std` = 0.027276，`pd.Series.std()` = 0.030496，差 12%。numpy 要样本标准差写 `std(ddof=1)`。
+
+13. **相对路径依赖「当前工作目录」，不是脚本所在目录** —— 脚本里写 `"nav.npy"`、`"grades.csv"`，路径相对 cwd 解析。从 `/` 启动时：写落到只读根卷报 `OSError: [Errno 30] Read-only file system`，读则在 `/` 下找不到文件报 `FileNotFoundError`。**同一病根，两个症状**；判断前先跑 `pwd`。彻底解法是 `BASE = Path(__file__).parent` 再用 `BASE / "name"` 拼路径。
 
 ## 目录约定
 
