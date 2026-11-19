@@ -179,7 +179,7 @@ python3 -m venv .venv
 6. **`TypeError` 与 `ValueError` 是并列类型，互不继承** —— `except ValueError` 抓不到 `TypeError`（如参数个数不对、类型不匹配），会导致程序直接崩溃。调用库函数前先确认参数个数：`datetime.date` 需要 3 个参数 `(year, month, day)`。
 7. **CSV 少一列会导致整行静默错位** —— `csv.writer` 不做列数校验，某行字段数比表头少时，该行后续列全部左移，不报错。读 CSV 后应先校验 `len(r) == len(header)`。
 
-## NumPy 的十三条易错点（第 4–5 周）
+## NumPy 的十五条易错点（第 4–6 周）
 
 1. **`np.array()` 的参数是数据，不是形状** —— `np.array((2, 3))` 得到一维 `[2 3]`，不是 2×3 矩阵。要 2×3 得传嵌套列表 `np.array([[1,2,3],[4,5,6]])`；只有 `zeros`/`ones`/`empty`/`random.randn` 才接收形状元组。
 2. **`reshape` 返回新数组，不修改原数组** —— `a.reshape(2,3)` 单独一行等于空转，必须 `print(...)` 或赋值接住。注意方向相反的例子：列表的 `.sort()` 原地改并返回 `None`，numpy 的 `.sort()` 原地改、`np.sort()` 返回副本，两套语义不要混。
@@ -210,6 +210,13 @@ python3 -m venv .venv
 12. **numpy 和 pandas 的 `std()` 分母不同** —— numpy 默认除以 `n`（总体标准差），pandas 默认除以 `n-1`（样本标准差，`ddof=1`）。实测同一组 5 个数：`np.std` = 0.027276，`pd.Series.std()` = 0.030496，差 12%。numpy 要样本标准差写 `std(ddof=1)`。
 
 13. **相对路径依赖「当前工作目录」，不是脚本所在目录** —— 脚本里写 `"nav.npy"`、`"grades.csv"`，路径相对 cwd 解析。从 `/` 启动时：写落到只读根卷报 `OSError: [Errno 30] Read-only file system`，读则在 `/` 下找不到文件报 `FileNotFoundError`。**同一病根，两个症状**；判断前先跑 `pwd`。彻底解法是 `BASE = Path(__file__).parent` 再用 `BASE / "name"` 拼路径。
+
+14. **`np.` 还是 `rng.`？看它产不产生随机数** —— **会产生随机数（抽样）的挂在生成器上**：`rng.normal` / `rng.choice` / `rng.randint` / `rng.random_sample` / `rng.permutation`；**纯计算的放 `np` 下**：`np.cumsum` / `np.exp` / `np.sqrt` / `np.where`。第三类是数组方法（`a.mean()` / `a.sum()`），与 `np.xxx(a)` 通常等价。
+    三个抽样函数怎么选：**要连续任意值 → `normal`；要从几个固定选项里挑 → `choice`；要整数区间（左闭右开）→ `randint`**。
+    不确定时 `help(函数名)` 看第一句：以 “Draw samples from…” 开头的是抽样（属 `rng`），以 “Return the…” 开头的是计算（属 `np`）。
+
+15. **`randint` 在 numpy 和内置 `random` 里语义不同：一个右开、一个闭** —— numpy 的 `rng.randint(low, high)` 是**左闭右开**，实测 `randint(-1, 1)` 只得到 `[-1 0]`，`randint(0, 1)` 只得到 `[0]`（退化成单一值）；Python 内置 `random.randint(a, b)` 是**两端都闭**，`randint(-1, 1)` 得到 `-1 0 1`。
+    别单独记这一点，记**全局规则**：numpy 里凡是"区间"右端一律不含 —— `arange(5)` 给 0–4、`a[:5]` 取 5 个元素、`randint(0, 2)` 给 0/1，三处同一规则。
 
 ## 目录约定
 

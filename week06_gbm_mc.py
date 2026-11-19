@@ -34,18 +34,50 @@ print(
 print("\n=== 3 GBM 单条路径 ===")
 # 几何布朗运动（GBM）描述股价的连续随机过程，离散到每一天是：每期对数收益 = (μ − 0.5σ²)·dt  +  σ·√dt·z
 #                                                                 └─ 漂移 ─┘      └─ 波动 ─┘
-rng4 = np.random.RandomState(seed=0)
+rng_gbm = np.random.RandomState(seed=0)
 #  help(np.exp) : 确认它和 np.log 互为反函数,参数可以是数组
-#  help(rng4.normal) : normal(loc=0.0, scale=1.0, size=None),前两个都是默认值,size 直接给 252
+#  help(rng_gbm.normal) : normal(loc=0.0, scale=1.0, size=None),前两个都是默认值,size 直接给 252
 s0 = 100
 mu = 0.10
 sigma = 0.20
 t = 1.0
-nsteps2 = 252
-dt = t / nsteps2
-steps4 = rng4.normal(size=nsteps2)
-gbm = (mu - 0.5 * sigma**2) * dt + sigma * (dt ** (1 / 2)) * steps4
-price = np.exp(np.cumsum(gbm)) * s0
+n_steps = 252
+dt = t / n_steps
+z3 = rng_gbm.normal(size=n_steps)
+logret3 = (mu - 0.5 * sigma**2) * dt + sigma * (dt ** (1 / 2)) * z3
+price3 = np.exp(np.cumsum(logret3)) * s0
 print(
-    np.shape(price), round(price[0], 4), round(price[-1], 4), round(np.min(price), 4)
+    np.shape(price3),
+    round(price3[0], 4),
+    round(price3[-1], 4),
+    round(np.min(price3), 4),
 )  #  exp 永远 > 0，价格不会变负,最小值必须是正数
+
+print("\n=== 4 GBM 多路径 GBM + 0.5σ² 对照实验 ===")
+rng4 = np.random.RandomState(seed=0)
+# ① 先 help(np.cumsum)，确认二维下要的是「每行内部沿时间累积」
+#    对应 axis = ?（昨天 ±1 漫步里用过同一个判断，结论照搬）
+n_paths = 10000
+z4 = rng4.normal(size=(n_paths, n_steps))
+logret4 = (mu - 0.5 * sigma**2) * dt + sigma * (dt ** (1 / 2)) * z4
+price4 = np.exp(np.cumsum(logret4, axis=1)) * s0
+theory = s0 * np.exp(mu * t)  # 理论均值，别硬编码 110.5171
+err = price4[:, -1].mean() / theory - 1  # 相对误差，是个小数
+
+print(
+    round(price4[:, -1].mean(), 3),
+    f"{err:+.2%}",
+    round(np.std(price4[:, -1]), 3),
+    round(np.min(price4), 3),
+)
+logret_wrong = mu * dt + sigma * (dt ** (1 / 2)) * z4
+price_wrong = np.exp(np.cumsum(logret_wrong, axis=1)) * s0
+err_wrong = price_wrong[:, -1].mean() / theory - 1
+print(
+    "漂移项改成不带 0.5σ² 的版本:",
+    round(price_wrong[:, -1].mean(), 3),
+    f"{err_wrong:+.2%}",
+    round(np.std(price_wrong[:, -1]), 3),
+    round(np.min(price_wrong), 3),
+)  #  两个均值差2.234
+# 两次都用同一个 z4（控制变量）：唯一差异是漂移项，因此 2.234 的差可归因于 0.5σ²
