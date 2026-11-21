@@ -5,9 +5,9 @@ print("\n=== 1 单条随机漫步,1000 步 ===")
 # help(np.cumsum) : 一维数组能省，省了之后默认axis=None，含义是“把数组摊平后累加”
 rng1 = np.random.RandomState(seed=0)
 steps1 = rng1.choice([-1, 1], size=1000)
-path = np.cumsum(steps1)
+path1 = np.cumsum(steps1)
 print(
-    steps1[:10], "\n", path[:10], "\n", path[-1]
+    steps1[:10], "\n", path1[:10], "\n", path1[-1]
 )  # cumsum 结果的第 k 项，在物理上对应所在位置
 
 print("\n=== 2 多条路径 + √N 验证 ===")
@@ -16,10 +16,10 @@ nwalks = 5
 nsteps = 1000
 rng2 = np.random.RandomState(seed=0)
 steps2 = rng2.choice([-1, 1], size=(nwalks, nsteps))
-path1 = np.cumsum(steps2, axis=1)
-print(np.shape(path1), "\n", path1[:, -1])
+path2 = np.cumsum(steps2, axis=1)
+print(np.shape(path2), "\n", path2[:, -1])
 
-finals = path1[:, -1]  # 每条路径的终值：作用在 path1 上，取最后一列
+finals = path2[:, -1]  # 每条路径的终值：作用在 path2 上，取最后一列
 rowsum = np.sum(steps2, axis=1)  # 每条路径的总位移：作用在 steps2 上，每行求和
 print(finals, rowsum, np.array_equal(finals, rowsum))  # 判等，用 np.array_equal
 
@@ -38,15 +38,15 @@ print("\n=== 3 GBM 单条路径 ===")
 rng_gbm = np.random.RandomState(seed=0)
 #  help(np.exp) : 确认它和 np.log 互为反函数,参数可以是数组
 #  help(rng_gbm.normal) : normal(loc=0.0, scale=1.0, size=None),前两个都是默认值,size 直接给 252
-s0 = 100
-mu = 0.10
-sigma = 0.20
-t = 1.0
+s0 = 100  # 今天的股价
+mu = 0.10  # 年化预期收益 10%
+sigma = 0.20  # 年化波动率 20%
+time = 1.0
 n_steps = 252
-dt = t / n_steps
+dt = time / n_steps  # 每片占一年的比例,把“年化”参数翻译成“每天”.
 z3 = rng_gbm.normal(size=n_steps)
 logret3 = (mu - 0.5 * sigma**2) * dt + sigma * (dt ** (1 / 2)) * z3
-price3 = np.exp(np.cumsum(logret3)) * s0
+price3 = np.exp(np.cumsum(logret3)) * s0  # 总对数收益,加上exp变为价格
 print(
     np.shape(price3),
     round(price3[0], 4),
@@ -62,15 +62,15 @@ n_paths = 10000
 z4 = rng4.normal(size=(n_paths, n_steps))
 logret4 = (mu - 0.5 * sigma**2) * dt + sigma * (dt ** (1 / 2)) * z4
 price4 = np.exp(np.cumsum(logret4, axis=1)) * s0
-theory = s0 * np.exp(mu * t)  # 理论均值，别硬编码 110.5171
+theory = s0 * np.exp(mu * time)  # 理论均值，别硬编码 110.5171
 err = price4[:, -1].mean() / theory - 1  # 相对误差，是个小数
-
 print(
     round(price4[:, -1].mean(), 3),
     f"{err:+.2%}",
     round(np.std(price4[:, -1]), 3),
     round(np.min(price4), 3),
 )
+
 logret_wrong = mu * dt + sigma * (dt ** (1 / 2)) * z4
 price_wrong = np.exp(np.cumsum(logret_wrong, axis=1)) * s0
 err_wrong = price_wrong[:, -1].mean() / theory - 1
