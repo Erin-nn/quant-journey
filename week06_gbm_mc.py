@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 print("\n=== 1 单条随机漫步,1000 步 ===")
 # help(np.cumsum) : 一维数组能省，省了之后默认axis=None，含义是“把数组摊平后累加”
@@ -81,3 +82,25 @@ print(
     round(np.min(price_wrong), 3),
 )  #  两个均值差2.234
 # 两次都用同一个 z4（控制变量）：唯一差异是漂移项，因此 2.234 的差可归因于 0.5σ²
+
+print("\n=== 5 出图（两张）===")
+ST = price4[:, -1]
+plt.figure(figsize=(9, 5))
+plt.plot(price4[:50].T, linewidth=0.6, alpha=0.7)
+plt.plot(price4[0], linewidth=2.5)
+plt.title("GBM Simulated Price Paths (50 of 10000)")
+plt.xlabel("trading day")
+plt.ylabel("price")
+plt.savefig("gbm_paths.png", dpi=100)
+plt.close()
+
+plt.figure(figsize=(8, 5))
+plt.hist(ST, bins=70)
+plt.axvline(110.5171, linewidth=1.5, color="r", linestyle="--")
+plt.title("Distribution of Terminal Prices (T=1y)")
+plt.xlabel("terminal price")
+plt.ylabel("frequency")
+plt.savefig("gbm_hist.png", dpi=100)
+plt.close()
+
+print(round(ST.mean(), 2), round(np.median(ST), 2), round(ST.max(), 2))  # 右偏
